@@ -1,6 +1,22 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-
+import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import LoginView from '@/views/login/LoginView.vue'
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/',
+    redirect: '/login'
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView
+  },
+  {
+    path: '/main',
+    name: 'main',
+    component: () =>
+      import(/* webpackChunkName: "amin" */ '@/views/main/MainView.vue')
+  }
   // {
   //   path: '/',
   //   name: 'home',
