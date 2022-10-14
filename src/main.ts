@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import request from '@/service'
+import 'element-plus/dist/index.css'
 
 request.request({
   url: '/home/multidata',
@@ -18,7 +19,8 @@ request.request({
     responseInterceptors: (res) => {
       return res.data
     }
-  }
+  },
+  showLoading: true
 })
 
 const app = createApp(App)

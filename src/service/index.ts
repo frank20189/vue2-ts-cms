@@ -3,6 +3,7 @@ import { ElMessage } from 'element-plus'
 const hyRequest = new HYRequest({
   baseURL: process.env.VUE_APP_BASEURL,
   timeout: 10000,
+  showLoading: true,
   interceptors: {
     requestInterceptors: (config) => {
       const token = 'test'
