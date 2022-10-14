@@ -2,7 +2,7 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 export interface HYRequestInterceptors {
   requestInterceptors?: (config: AxiosRequestConfig) => AxiosRequestConfig
   requestInterceptorCatch?: (error: any) => any
-  responseInterceptors?: (response: AxiosResponse) => Promise<AxiosResponse>
+  responseInterceptors?: (response: AxiosResponse) => AxiosResponse
   responseInterceptorCatch?: (error: any) => any
 }
 

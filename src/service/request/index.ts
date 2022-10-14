@@ -1,9 +1,13 @@
 import type { AxiosInstance } from 'axios'
 import axios from 'axios'
-import type { HYRequestConfig, HYRequestInterceptors } from './types'
-import { ElMessage, ElLoading } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 import { LoadingInstance } from 'element-plus/lib/components/loading/src/loading'
-
+import type { HYRequestConfig, HYRequestInterceptors } from './types'
+interface ResponseResult<T> {
+  success: boolean
+  returnCode: string
+  data: T
+}
 const DEFALT_LOADING = true
 class HYRequest {
   intstance: AxiosInstance
@@ -11,7 +15,9 @@ class HYRequest {
   showLoading: boolean
   loading?: LoadingInstance
   constructor(config: HYRequestConfig) {
+    // 常见axios实例
     this.intstance = axios.create(config)
+    // 保存基本信息
     this.showLoading = config.showLoading ?? DEFALT_LOADING
     this.interceptors = config.interceptors
 
@@ -42,12 +48,14 @@ class HYRequest {
       (response) => {
         const data = response.data
         this.loading?.close()
-
-        if (data.returnCode === '-1001') {
-          console.log('请求失败')
-        } else {
-          return data
-        }
+        return new Promise((resolve, reject) => {
+          if (data.returnCode === '-1001') {
+            console.log('请求失败')
+            reject(response)
+          } else {
+            resolve(response)
+          }
+        })
       },
       (err) => {
         this.loading?.close()
@@ -59,28 +67,47 @@ class HYRequest {
     )
   }
 
-  request(config: HYRequestConfig) {
-    if (config.interceptors?.requestInterceptors) {
-      config = config.interceptors.requestInterceptors(config)
-    }
-    if (config.showLoading === false) {
-      this.showLoading = config.showLoading
-    }
-    this.intstance
-      .request(config)
-      .then(async (res) => {
-        if (config.interceptors?.responseInterceptors) {
-          res = await config.interceptors.responseInterceptors(res)
-          console.log(res)
-          // 将请求设置为true，这样不会影响下一个请求
-        }
-      })
-      .catch((err) => {
-        return err
-      })
-      .finally(() => {
-        this.showLoading = DEFALT_LOADING
-      })
+  request<T, D = ResponseResult<T>>(config: HYRequestConfig): Promise<D> {
+    // 单个请求对请求拦截器的处理
+    return new Promise((resolve, reject) => {
+      if (config.interceptors?.requestInterceptors) {
+        config = config.interceptors.requestInterceptors(config)
+      }
+      // 设置单个请求是否显示Loading组件
+      if (config.showLoading === false) {
+        this.showLoading = config.showLoading
+      }
+      this.intstance
+        .request<D>(config)
+        .then((res) => {
+          // 单个请求对数据的处理
+          if (config.interceptors?.responseInterceptors) {
+            res = config.interceptors.responseInterceptors(res)
+          }
+          resolve(res.data)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+        .finally(() => {
+          this.showLoading = DEFALT_LOADING
+        })
+    })
+  }
+  get<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+    return this.request<T>({ ...config, method: 'GET' })
+  }
+  post<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+    return this.request<T>({ ...config, method: 'POST' })
+  }
+  delete<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+    return this.request<T>({ ...config, method: 'DELETE' })
+  }
+  put<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+    return this.request<T>({ ...config, method: 'PUT' })
+  }
+  patch<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+    return this.request<T>({ ...config, method: 'PATCH' })
   }
 }
 

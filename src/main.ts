@@ -5,23 +5,26 @@ import store from './store'
 import request from '@/service'
 import 'element-plus/dist/index.css'
 
-request.request({
-  url: '/home/multidata',
-  method: 'GET',
-  params: {
-    id: 11
-  },
-  interceptors: {
-    requestInterceptors: (config) => {
-      console.log('单独请求的config')
-      return config
+interface Data {
+  banner: any
+  dKeyword: any
+  keywords: any
+  recommend: any
+}
+
+request
+  .get<Data>({
+    url: '/home/multidata',
+    params: {
+      id: 11
     },
-    responseInterceptors: (res) => {
-      return res.data
-    }
-  },
-  showLoading: true
-})
+    showLoading: true
+  })
+  .then((res) => {
+    console.log(res.data)
+    console.log(res.returnCode)
+    console.log(res.success)
+  })
 
 const app = createApp(App)
 app.use(store)

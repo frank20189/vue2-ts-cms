@@ -1,5 +1,5 @@
 import HYRequest from './request'
-import { ElMessage } from 'element-plus'
+// import { ElMessage } from 'element-plus'
 const hyRequest = new HYRequest({
   baseURL: process.env.VUE_APP_BASEURL,
   timeout: 10000,
@@ -18,14 +18,7 @@ const hyRequest = new HYRequest({
       return error
     },
     responseInterceptors: (response) => {
-      return new Promise((resolve, reject) => {
-        if (response.status === 200) {
-          resolve(response)
-        } else {
-          ElMessage.warning(response.data.message)
-          reject(response)
-        }
-      })
+      return response
     }
   }
 })
