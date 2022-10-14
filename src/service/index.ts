@@ -1,22 +1,27 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import HYRequest from './request'
-
+import { ElMessage } from 'element-plus'
 const hyRequest = new HYRequest({
   baseURL: process.env.VUE_APP_BASEURL,
   timeout: 10000,
   interceptors: {
-    requestInterceptors: (config: AxiosRequestConfig) => {
-      console.log('请求拦截器')
+    requestInterceptors: (config) => {
+      const token = 'test'
+      // 目前的解决方法如下
+      if (config && config.headers && token) {
+        config.headers.Authorization = token
+      }
+
       return config
     },
     responseInterceptorCatch: (error) => {
       return error
     },
-    responseInterceptors: (response: AxiosResponse) => {
+    responseInterceptors: (response) => {
       return new Promise((resolve, reject) => {
         if (response.status === 200) {
-          resolve(response.data)
+          resolve(response)
         } else {
+          ElMessage.warning(response.data.message)
           reject(response)
         }
       })

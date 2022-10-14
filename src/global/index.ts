@@ -1,5 +1,5 @@
-import { App } from 'vue'
+// import { App } from 'vue'
 
-export function registerApp(app: App) {
-  return {}
-}
+// export function registerApp(app: App) {
+//   return {}
+// }
