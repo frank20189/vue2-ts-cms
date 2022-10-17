@@ -17,7 +17,7 @@
 <script lang="ts">
 import rules from '../config/phoneConfig'
 import { defineComponent, reactive, ref } from 'vue'
-import { ValidateFieldsError } from 'async-validator'
+import type { ValidateFieldsError } from 'async-validator'
 import { ElForm, ElMessage } from 'element-plus'
 export default defineComponent({
   name: 'LoginPhone',
@@ -48,11 +48,16 @@ export default defineComponent({
         }
       )
     }
+
+    const resetForm = () => {
+      formRef.value?.resetFields()
+    }
     return {
       phone,
       rules,
       formRef,
-      loginAction
+      loginAction,
+      resetForm
     }
   }
 })

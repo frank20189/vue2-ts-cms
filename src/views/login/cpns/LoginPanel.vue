@@ -56,6 +56,10 @@ export default defineComponent({
      */
     const handleTabsChange = (e: TabsPaneContext) => {
       isAccount.value = e.index === '0'
+
+      // 在切换tabs栏时候 清楚之前的状态
+      accountRef.value?.resetForm()
+      phoneRef.value?.resetForm()
     }
 
     /**

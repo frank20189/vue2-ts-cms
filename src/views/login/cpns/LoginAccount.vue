@@ -7,7 +7,7 @@
       <el-form-item label="密码" prop="password">
         <el-input
           placeholder="请输入密码"
-          type="password"
+          show-password
           v-model="account.password"
         />
       </el-form-item>
@@ -18,15 +18,17 @@
 <script lang="ts">
 import { ElForm, ElMessage } from 'element-plus'
 import { defineComponent, reactive, ref } from 'vue'
-import { ValidateFieldsError } from 'async-validator'
 import rules from '../config/accountConfig'
+import localCache from '@/utils/cache'
+
+import type { ValidateFieldsError } from 'async-validator'
 export default defineComponent({
   name: 'LoginAccount',
   setup() {
     const formRef = ref<InstanceType<typeof ElForm>>()
     const account = reactive({
-      name: '',
-      password: ''
+      name: localCache.getCache('name') ?? '',
+      password: localCache.getCache('password') ?? ''
     })
 
     // accountLogin
@@ -34,7 +36,19 @@ export default defineComponent({
       formRef.value?.validate(
         (valid: boolean, invalidFields: ValidateFieldsError | undefined) => {
           if (valid) {
-            console.log('submit!')
+            // console.log('submit!')
+            // 判断是否要记住密码
+
+            // 如果需要记住密码，则将密码缓存在本地缓存中，如果不需要则删除
+            if (isKeepPassword) {
+              // 本地缓存
+              localCache.setCache('name', account.name)
+              localCache.setCache('password', account.password)
+            } else {
+              localCache.deleteCache('name')
+              localCache.deleteCache('password')
+            }
+            // 开始进行登录验证
           } else {
             // 将警告信息展示
             if (invalidFields) {
@@ -50,11 +64,16 @@ export default defineComponent({
       )
       console.log('account login', isKeepPassword)
     }
+
+    const resetForm = () => {
+      formRef.value?.resetFields()
+    }
     return {
       formRef,
       account,
       rules,
-      loginAction
+      loginAction,
+      resetForm
     }
   }
 })
@@ -71,6 +90,9 @@ export default defineComponent({
       padding: 8px 4px;
       .el-input__inner {
         padding-left: 8px !important;
+      }
+      .el-input__suffix-inner {
+        margin-right: 4px;
       }
     }
   }
