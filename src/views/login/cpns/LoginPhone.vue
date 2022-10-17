@@ -17,7 +17,8 @@
 <script lang="ts">
 import rules from '../config/phoneConfig'
 import { defineComponent, reactive, ref } from 'vue'
-import { ElForm } from 'element-plus'
+import { ValidateFieldsError } from 'async-validator'
+import { ElForm, ElMessage } from 'element-plus'
 export default defineComponent({
   name: 'LoginPhone',
   setup() {
@@ -29,13 +30,23 @@ export default defineComponent({
 
     // phoneLogin
     const loginAction = () => {
-      formRef.value?.validate((valid: boolean) => {
-        if (valid) {
-          console.log('submit!')
-        } else {
-          console.log('error submit!')
+      formRef.value?.validate(
+        (valid: boolean, invalidFields: ValidateFieldsError | undefined) => {
+          if (valid) {
+            console.log('submit!')
+          } else {
+            // 将警告信息展示
+            if (invalidFields) {
+              Object.values(invalidFields).forEach((item) => {
+                ElMessage.warning(item[0].message)
+              })
+            } else {
+              ElMessage.warning('输入错误')
+            }
+            console.log('error submit!')
+          }
         }
-      })
+      )
     }
     return {
       phone,

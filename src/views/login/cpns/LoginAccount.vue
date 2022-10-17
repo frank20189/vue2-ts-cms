@@ -16,8 +16,9 @@
 </template>
 
 <script lang="ts">
-import { ElForm } from 'element-plus'
+import { ElForm, ElMessage } from 'element-plus'
 import { defineComponent, reactive, ref } from 'vue'
+import { ValidateFieldsError } from 'async-validator'
 import rules from '../config/accountConfig'
 export default defineComponent({
   name: 'LoginAccount',
@@ -30,13 +31,23 @@ export default defineComponent({
 
     // accountLogin
     const loginAction = (isKeepPassword: boolean) => {
-      formRef.value?.validate((valid: boolean) => {
-        if (valid) {
-          console.log('submit!')
-        } else {
-          console.log('error submit!')
+      formRef.value?.validate(
+        (valid: boolean, invalidFields: ValidateFieldsError | undefined) => {
+          if (valid) {
+            console.log('submit!')
+          } else {
+            // 将警告信息展示
+            if (invalidFields) {
+              Object.values(invalidFields).forEach((item) => {
+                ElMessage.warning(item[0].message)
+              })
+            } else {
+              ElMessage.warning('输入错误')
+            }
+            console.log('error submit!')
+          }
         }
-      })
+      )
       console.log('account login', isKeepPassword)
     }
     return {
