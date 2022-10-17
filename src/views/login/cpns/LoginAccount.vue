@@ -58,7 +58,6 @@ export default defineComponent({
             } else {
               ElMessage.warning('输入错误')
             }
-            console.log('error submit!')
           }
         }
       )
