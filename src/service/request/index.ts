@@ -1,7 +1,7 @@
-import type { AxiosInstance } from 'axios'
 import axios from 'axios'
 import { ElLoading, ElMessage } from 'element-plus'
 import { LoadingInstance } from 'element-plus/lib/components/loading/src/loading'
+import type { AxiosInstance } from 'axios'
 import type { HYRequestConfig, HYRequestInterceptors } from './types'
 interface ResponseResult<T> {
   success: boolean
