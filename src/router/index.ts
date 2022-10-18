@@ -2,10 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import LoginView from '@/views/login/LoginView.vue'
 import { App } from 'vue'
+import localCache from '@/utils/cache'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/main'
   },
   {
     path: '/login',
@@ -25,6 +26,14 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((to) => {
+  if (to.path !== '/login') {
+    const token = localCache.getCache('token')
+    if (!token) {
+      return '/login'
+    }
+  }
+})
 export const setupRouter = (app: App) => {
   app.use(router)
 }

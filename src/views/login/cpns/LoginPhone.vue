@@ -33,7 +33,7 @@ export default defineComponent({
       formRef.value?.validate(
         (valid: boolean, invalidFields: ValidateFieldsError | undefined) => {
           if (valid) {
-            console.log('submit!')
+            console.log('手机号登录')
           } else {
             // 将警告信息展示
             if (invalidFields) {

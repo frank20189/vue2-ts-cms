@@ -16,12 +16,13 @@
 </template>
 
 <script lang="ts">
+import localCache from '@/utils/cache'
+import type { ValidateFieldsError } from 'async-validator'
 import { ElForm, ElMessage } from 'element-plus'
 import { defineComponent, reactive, ref } from 'vue'
+import { useStore } from 'vuex'
 import rules from '../config/accountConfig'
-import localCache from '@/utils/cache'
 
-import type { ValidateFieldsError } from 'async-validator'
 export default defineComponent({
   name: 'LoginAccount',
   setup() {
@@ -31,6 +32,7 @@ export default defineComponent({
       password: localCache.getCache('password') ?? ''
     })
 
+    const store = useStore()
     // accountLogin
     const loginAction = (isKeepPassword: boolean) => {
       formRef.value?.validate(
@@ -49,6 +51,8 @@ export default defineComponent({
               localCache.deleteCache('password')
             }
             // 开始进行登录验证
+
+            store.dispatch('loginModule/accountLoginAction', { ...account })
           } else {
             // 将警告信息展示
             if (invalidFields) {
@@ -61,7 +65,6 @@ export default defineComponent({
           }
         }
       )
-      console.log('account login', isKeepPassword)
     }
 
     const resetForm = () => {

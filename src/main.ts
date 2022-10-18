@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import store, { setupStore } from './store'
 import 'normalize.css'
 import './assets/css/index.less'
 import 'element-plus/dist/index.css'
@@ -14,4 +14,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.use(store)
 app.use(router)
+setupStore()
+
 app.mount('#app')

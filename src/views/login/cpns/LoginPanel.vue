@@ -1,13 +1,8 @@
 <template>
   <div class="login-panel">
     <h1>后台管理系统</h1>
-    <el-tabs
-      type="border-card"
-      class="tabs"
-      stretch
-      @tabClick="handleTabsChange"
-    >
-      <el-tab-pane>
+    <el-tabs type="border-card" class="tabs" stretch v-model="currentTab">
+      <el-tab-pane name="account">
         <template #label>
           <div class="top-tabs">
             <el-icon><User /></el-icon>
@@ -16,7 +11,7 @@
         </template>
         <login-account ref="accountRef" />
       </el-tab-pane>
-      <el-tab-pane>
+      <el-tab-pane name="phone">
         <template #label>
           <div class="top-tabs">
             <el-icon><Iphone /></el-icon>
@@ -27,7 +22,7 @@
       </el-tab-pane>
     </el-tabs>
 
-    <div class="account-control" v-show="isAccount">
+    <div class="account-control" v-show="currentTab === 'account'">
       <el-checkbox v-model="isKeepPassword">记住密码</el-checkbox>
       <el-link>忘记密码</el-link>
     </div>
@@ -37,7 +32,6 @@
 </template>
 
 <script lang="ts">
-import type { TabsPaneContext } from 'element-plus'
 import { defineComponent, ref } from 'vue'
 import LoginAccount from './LoginAccount.vue'
 import LoginPhone from './LoginPhone.vue'
@@ -46,27 +40,16 @@ export default defineComponent({
   components: { LoginAccount, LoginPhone },
   setup() {
     const isKeepPassword = ref<boolean>(true)
-    const isAccount = ref<boolean>(true)
     // InstanceType<typeof 某个组件> 用于获取组件实例的类型
     const accountRef = ref<InstanceType<typeof LoginAccount>>()
     const phoneRef = ref<InstanceType<typeof LoginPhone>>()
-
-    /**
-     *  记录当前的登录状态
-     */
-    const handleTabsChange = (e: TabsPaneContext) => {
-      isAccount.value = e.index === '0'
-
-      // 在切换tabs栏时候 清楚之前的状态
-      accountRef.value?.resetForm()
-      phoneRef.value?.resetForm()
-    }
+    const currentTab = ref<string>('account')
 
     /**
      * 根据tabs切换判断是否是账号登录，如果是账号登录，则使用LoginAccount组件中的方法，否则是LoginPhone组件中的方法
      */
     const handleLoginClick = () => {
-      if (isAccount.value) {
+      if (currentTab.value === 'account') {
         accountRef.value?.loginAction(isKeepPassword.value)
       } else {
         phoneRef.value?.loginAction()
@@ -77,8 +60,7 @@ export default defineComponent({
       isKeepPassword,
       phoneRef,
       accountRef,
-      isAccount,
-      handleTabsChange,
+      currentTab,
       handleLoginClick
     }
   }
