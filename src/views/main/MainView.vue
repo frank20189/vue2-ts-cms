@@ -2,9 +2,9 @@
   <div>
     <div class="main">
       <el-container class="main-content">
-        <el-aside :width="isCollapse ? '60px' : '210px'"
-          ><NavMenu :isCollapse="isCollapse"
-        /></el-aside>
+        <el-aside :width="isCollapse ? '60px' : '210px'">
+          <NavMenu :isCollapse="isCollapse" />
+        </el-aside>
         <el-container class="page">
           <el-header class="page-header">
             <NavHeader @foldChange="foldChange" />
