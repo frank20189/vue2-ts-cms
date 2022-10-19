@@ -2,9 +2,17 @@
   <div class="nav-bar">
     <div class="logo">
       <img class="img" src="~@/assets/logo.png" alt="logo" />
-      <span class="title">Vue3+TSAdmin</span>
+      <span class="title" v-show="!isCollapse">Vue3+TSAdmin</span>
     </div>
-    <el-menu default-active="2" class="el-menu-vertical" unique-opened>
+    <el-menu
+      default-active="2"
+      class="el-menu-vertical"
+      unique-opened
+      background-color="#001529"
+      active-text-color="#66b1ff"
+      text-color="#999"
+      :collapse="isCollapse"
+    >
       <template v-for="item in userMenus" :key="item.id">
         <template v-if="item.type === 1">
           <el-sub-menu :index="item.url">
@@ -38,6 +46,12 @@ import { useStore } from '@/store'
 import { camelCase, upperFirst } from 'lodash'
 import { computed, defineComponent } from 'vue'
 export default defineComponent({
+  props: {
+    isCollapse: {
+      type: Boolean,
+      default: true
+    }
+  },
   setup() {
     const store = useStore()
     // const userMenus = computed(() => store.state.loginModule.userMenus)
@@ -88,11 +102,15 @@ export default defineComponent({
     }
     .el-menu-item:hover {
       color: #fff;
-      background-color: #10283f !important;
+      background-color: #1e507e !important;
     }
     .is-active {
       color: #66b1ff !important;
-      background-color: #10283f !important;
+      background-color: #1e507e !important;
+    }
+    .el-menu-vertical:not(.el-menu--collapse) {
+      width: 100%;
+      height: calc(100% - 48px);
     }
   }
 
