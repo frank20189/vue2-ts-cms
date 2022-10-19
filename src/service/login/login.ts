@@ -31,7 +31,7 @@ export function requestUserInfoById(id: number) {
  * @param id 用户id
  */
 export function requestUserMenuByRoleId(id: number) {
-  return hyRequest.get<IUserMenuInfo>({
+  return hyRequest.get<IUserMenuInfo[]>({
     url: LoginAPI.UserMenus + id + '/menu',
     showLoading: false
   })

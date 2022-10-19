@@ -18,7 +18,7 @@ const loginModule: Module<ILogonState, IRootState> = {
     return {
       token: '',
       userInfo: {} as unknown as IUserInfo,
-      userMenus: [] as unknown as IUserMenuInfo
+      userMenus: [] as unknown as IUserMenuInfo[]
     }
   },
   getters: {},
