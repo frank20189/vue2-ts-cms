@@ -17,7 +17,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/main',
     name: 'main',
     component: () =>
-      import(/* webpackChunkName: "amin" */ '@/views/main/MainView.vue')
+      import(/* webpackChunkName: "main" */ '@/views/main/MainView.vue')
+    // children: [] -> 根据userMenus决定
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () =>
+      import(/* webpackChunkName: "NotFound" */ '@/views/notFound/NotFound.vue')
   }
 ]
 
@@ -26,6 +33,7 @@ const router = createRouter({
   routes
 })
 
+// 导航守卫
 router.beforeEach((to) => {
   if (to.path !== '/login') {
     const token = localCache.getCache('token')

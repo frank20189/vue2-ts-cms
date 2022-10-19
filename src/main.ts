@@ -9,7 +9,7 @@ import { registerApp } from '@/global'
 const app = createApp(App)
 registerApp(app)
 app.use(store)
-app.use(router)
 setupStore()
+app.use(router)
 
 app.mount('#app')

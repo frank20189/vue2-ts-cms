@@ -8,6 +8,7 @@
       default-active="2"
       class="el-menu-vertical"
       unique-opened
+      router
       background-color="#001529"
       active-text-color="#66b1ff"
       text-color="#999"

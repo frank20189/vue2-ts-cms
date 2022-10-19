@@ -11,6 +11,7 @@ import router from '@/router'
 import { IRootState } from '../types'
 import { ILogonState, ILoginStateKey } from './types'
 import { IAccount, IUserInfo, IUserMenuInfo } from '@/service/login/type'
+import { mapMenusToRoutes } from '@/utils/mapMenus'
 
 const loginModule: Module<ILogonState, IRootState> = {
   namespaced: true,
@@ -27,6 +28,13 @@ const loginModule: Module<ILogonState, IRootState> = {
       Object.keys(state).forEach((item: string) => {
         state[item as ILoginStateKey] = payLoad[item]
       })
+    },
+    changeUserMenus(state, payLoad) {
+      // TODO 将获取的菜单映射到路由
+      mapMenusToRoutes(payLoad).forEach((route) => {
+        router.addRoute('main', route)
+      })
+      // 将routes =>router.main.children
     }
   },
   actions: {
@@ -52,6 +60,7 @@ const loginModule: Module<ILogonState, IRootState> = {
         userInfo,
         userMenus
       })
+      commit('changeUserMenus', userMenus)
       router.push('/main')
     },
     loadLocalLogin({ commit }) {
@@ -64,6 +73,7 @@ const loginModule: Module<ILogonState, IRootState> = {
           userInfo,
           userMenus
         })
+        commit('changeUserMenus', userMenus)
       }
     }
   }
