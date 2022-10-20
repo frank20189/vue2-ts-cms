@@ -10,6 +10,7 @@ export function mapMenusToRoutes(userMenus: IUserMenuInfo[]): RouteRecordRaw[] {
   const filePath = routeFiles.keys()
 
   filePath.forEach((key: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const route = require('../router/main' + key.split('.')[1])
     allRoutes.push(route.default)
   })
