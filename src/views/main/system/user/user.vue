@@ -15,4 +15,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.user {
+}
+</style>
