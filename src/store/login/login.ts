@@ -6,12 +6,12 @@ import {
   requestUserMenuByRoleId
 } from '@/service/login/login'
 import router from '@/router'
+import { mapMenusToRoutes } from '@/utils/mapMenus'
 
 // ================类型==================
 import { IRootState } from '../types'
 import { ILogonState, ILoginStateKey } from './types'
 import { IAccount, IUserInfo, IUserMenuInfo } from '@/service/login/type'
-import { mapMenusToRoutes } from '@/utils/mapMenus'
 
 const loginModule: Module<ILogonState, IRootState> = {
   namespaced: true,
@@ -30,11 +30,10 @@ const loginModule: Module<ILogonState, IRootState> = {
       })
     },
     changeUserMenus(state, payLoad) {
-      // TODO 将获取的菜单映射到路由
+      // 将routes =>router.main.children
       mapMenusToRoutes(payLoad).forEach((route) => {
         router.addRoute('main', route)
       })
-      // 将routes =>router.main.children
     }
   },
   actions: {
@@ -63,6 +62,7 @@ const loginModule: Module<ILogonState, IRootState> = {
       commit('changeUserMenus', userMenus)
       router.push('/main')
     },
+    // 防止刷新后数据丢失问题
     loadLocalLogin({ commit }) {
       const token = localCache.getCache('token')
       const userInfo = localCache.getCache('userInfo')
