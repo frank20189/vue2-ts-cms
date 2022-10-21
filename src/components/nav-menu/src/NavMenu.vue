@@ -5,7 +5,7 @@
       <span class="title" v-show="!isCollapse">Vue3+TSAdmin</span>
     </div>
     <el-menu
-      default-active="2"
+      :default-active="currentIndex"
       class="el-menu-vertical"
       unique-opened
       router
@@ -45,7 +45,8 @@
 <script lang="ts">
 import { useStore } from '@/store'
 import { camelCase, upperFirst } from 'lodash'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
+import { useRoute } from 'vue-router'
 export default defineComponent({
   props: {
     isCollapse: {
@@ -54,8 +55,9 @@ export default defineComponent({
     }
   },
   setup() {
+    const currentPath = useRoute()
+    const currentIndex = ref<string>(currentPath.fullPath)
     const store = useStore()
-    // const userMenus = computed(() => store.state.loginModule.userMenus)
     const userMenus = computed(() => {
       return store.state.loginModule.userMenus.map((item) => {
         return {
@@ -64,7 +66,8 @@ export default defineComponent({
         }
       })
     })
-    return { userMenus, camelCase, upperFirst }
+
+    return { userMenus, camelCase, upperFirst, currentIndex }
   }
 })
 </script>

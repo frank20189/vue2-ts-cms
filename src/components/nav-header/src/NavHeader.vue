@@ -4,19 +4,24 @@
       <component :is="isFold ? 'Expand' : 'Fold'"></component>
     </el-icon>
     <div class="content">
-      <div>面包屑</div>
+      <CustomBreadcrumb :breadcrumb="breadcrumb" />
       <UserInfo />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import UserInfo from './UserInfo.vue'
+// import NavBreadcrumb from './NavBreadcrumb.vue'
+import CustomBreadcrumb from '@/base/breadcrumb'
+import { useStore } from '@/store'
+import { pathMapBreadcrumbs } from '@/utils/mapMenus'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'NavHeader',
   emits: ['foldChange'],
-  components: { UserInfo },
+  components: { UserInfo, CustomBreadcrumb },
   setup(props, { emit }) {
     const isFold = ref<boolean>(false)
 
@@ -24,7 +29,17 @@ export default defineComponent({
       isFold.value = !isFold.value
       emit('foldChange', isFold.value)
     }
-    return { handleFoldChange, isFold }
+
+    // 面包屑导航数据
+    const breadcrumb = computed(() => {
+      const store = useStore()
+      return pathMapBreadcrumbs(
+        store.state.loginModule.userMenus,
+        useRoute().fullPath
+      )
+    })
+
+    return { handleFoldChange, isFold, breadcrumb }
   }
 })
 </script>

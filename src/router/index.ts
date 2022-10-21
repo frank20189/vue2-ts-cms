@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import LoginView from '@/views/login/LoginView.vue'
 import { App } from 'vue'
 import localCache from '@/utils/cache'
+import { firstMenu } from '@/utils/mapMenus'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -40,6 +41,10 @@ router.beforeEach((to) => {
     if (!token) {
       return '/login'
     }
+  }
+
+  if (to.path === '/main') {
+    return firstMenu.url
   }
 })
 export const setupRouter = (app: App) => {
