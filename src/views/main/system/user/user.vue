@@ -1,19 +1,20 @@
 <template>
   <div class="user">
     <div class="search">
-      <CustomForm v-bind="searchFormConfig" />
+      <SearchForm :searchFormConfig="searchFormConfig" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import CustomForm from '@/base/form'
 import { defineComponent } from 'vue'
 import { searchFormConfig } from './config/user.config'
+import SearchForm from '@/components/searchForm'
 
 export default defineComponent({
   name: 'user',
-  components: { CustomForm },
+  components: { SearchForm },
+
   setup() {
     return { searchFormConfig }
   }

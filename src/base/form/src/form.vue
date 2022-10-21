@@ -1,5 +1,8 @@
 <template>
   <div class="base-form">
+    <div class="header">
+      <slot name="header"></slot>
+    </div>
     <el-form :label-width="labelWidth">
       <el-row>
         <template v-for="item in formItems" :key="item.label">
@@ -16,10 +19,15 @@
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
                   :show-password="item.type === 'password'"
+                  v-model="formData[`${item.field}`]"
                 />
               </template>
               <template v-else-if="item.type === 'select'">
-                <el-select :placeholder="item.placeholder" style="width: 100%">
+                <el-select
+                  :placeholder="item.placeholder"
+                  style="width: 100%"
+                  v-model="formData[`${item.field}`]"
+                >
                   <el-option
                     v-for="option in item.options"
                     :key="option.label"
@@ -35,6 +43,7 @@
                   style="width: 100%"
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
+                  v-model="formData[`${item.field}`]"
                 />
               </template>
             </el-form-item>
@@ -42,11 +51,14 @@
         </template>
       </el-row>
     </el-form>
+    <div class="footer">
+      <slot name="footer"></slot>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref, watch } from 'vue'
 import { IFormItem } from '../types'
 export default defineComponent({
   props: {
@@ -65,10 +77,20 @@ export default defineComponent({
     colLayout: {
       type: Object,
       default: () => ({ xl: 6, lg: 8, md: 12, sm: 24, xs: 24 })
+    },
+    modelValue: {
+      type: Object,
+      required: true
     }
   },
-  setup() {
-    return {}
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    // 满足单项数据流原则
+    const formData = ref<Record<string, any>>({ ...props.modelValue })
+    watch(formData, (newValue) => emit('update:modelValue', newValue), {
+      deep: true
+    })
+    return { formData }
   }
 })
 </script>

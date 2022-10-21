@@ -1,6 +1,7 @@
 export type IFormOptions = { label: string; value: string }
 
 export interface IFormItem {
+  field: string
   type: string
   label: string
   rules?: any[]

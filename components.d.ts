@@ -40,6 +40,7 @@ declare module '@vue/runtime-core' {
     NavMenu: typeof import('./src/components/nav-menu/src/NavMenu.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchForm: typeof import('./src/components/searchForm/src/SearchForm.vue')['default']
     UserInfo: typeof import('./src/components/nav-header/src/UserInfo.vue')['default']
   }
 }
