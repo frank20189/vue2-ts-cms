@@ -50,7 +50,7 @@ class HYRequest {
         const data = response.data
         this.loading?.close()
         return new Promise((resolve, reject) => {
-          if (data.returnCode === '-1001') {
+          if (data.code === '-1001') {
             console.log('请求失败')
             reject(response)
           } else {
@@ -68,7 +68,7 @@ class HYRequest {
     )
   }
 
-  request<T, D = ResponseResult<T>>(config: HYRequestConfig): Promise<D> {
+  request<T = any, D = ResponseResult<T>>(config: HYRequestConfig): Promise<D> {
     // 单个请求对请求拦截器的处理
     return new Promise((resolve, reject) => {
       if (config.interceptors?.requestInterceptors) {
@@ -95,19 +95,19 @@ class HYRequest {
         })
     })
   }
-  get<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+  get<T = any>(config: HYRequestConfig): Promise<ResponseResult<T>> {
     return this.request<T>({ ...config, method: 'GET' })
   }
-  post<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+  post<T = any>(config: HYRequestConfig): Promise<ResponseResult<T>> {
     return this.request<T>({ ...config, method: 'POST' })
   }
-  delete<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+  delete<T = any>(config: HYRequestConfig): Promise<ResponseResult<T>> {
     return this.request<T>({ ...config, method: 'DELETE' })
   }
-  put<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+  put<T = any>(config: HYRequestConfig): Promise<ResponseResult<T>> {
     return this.request<T>({ ...config, method: 'PUT' })
   }
-  patch<T>(config: HYRequestConfig): Promise<ResponseResult<T>> {
+  patch<T = any>(config: HYRequestConfig): Promise<ResponseResult<T>> {
     return this.request<T>({ ...config, method: 'PATCH' })
   }
 }

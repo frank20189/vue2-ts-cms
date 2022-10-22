@@ -40,7 +40,7 @@ const formItems: IFormItem[] = [
 ]
 export const searchFormConfig: IForm = {
   colLayout: {
-    span: 4
+    span: 6
   },
   formItems
 }

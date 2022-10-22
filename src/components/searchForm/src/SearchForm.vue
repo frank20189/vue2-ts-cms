@@ -27,7 +27,7 @@ export default defineComponent({
       type: Object,
       required: true
     },
-    top: {
+    btnToTop: {
       type: String,
       default: '22px'
     }
@@ -57,7 +57,7 @@ export default defineComponent({
     // padding-bottom: 32px;
     position: absolute;
     right: 0;
-    top: v-bind(top);
+    top: v-bind(btnToTop);
   }
 }
 </style>
