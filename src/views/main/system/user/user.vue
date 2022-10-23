@@ -4,30 +4,51 @@
       <SearchForm :searchFormConfig="searchFormConfig" :btnToTop="'75px'" />
     </div>
     <div class="content">
-      <el-table :data="userList" border stripe style="width: 100%">
-        <template v-for="item in propList" :key="item.prop">
-          <el-table-column
-            :prop="item.prop"
-            :label="item.label"
-            :min-width="item.minWidth"
-            :align="item.align"
-          ></el-table-column>
+      <CustomTable :listData="userList" :propList="propList">
+        <template #status="scope">
+          <el-tag
+            :type="scope.row.enable ? 'success' : 'danger'"
+            effect="dark"
+            >{{ scope.row.enable ? '启用' : '禁用' }}</el-tag
+          >
         </template>
-      </el-table>
+        <template #createAt="scope">
+          <span>{{ formatTime(scope.row.createAt) }}</span>
+        </template>
+        <template #updateAt="scope">
+          <span>{{ formatTime(scope.row.updateAt) }}</span>
+        </template>
+        <template #actions="scope">
+          <el-button @click="getDetail(scope.row.id)" type="primary">
+            查看
+          </el-button>
+          <el-button @click="getDetail(scope.row.id)" type="warning">
+            编辑
+          </el-button>
+          <el-button @click="getDetail(scope.row.id)" type="danger">
+            删除
+          </el-button>
+        </template>
+      </CustomTable>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, getCurrentInstance } from 'vue'
 import { searchFormConfig } from './config/user.config'
-import SearchForm from '@/components/searchForm'
 import { useStore } from '@/store'
+import moment from 'moment'
+import SearchForm from '@/components/searchForm'
+import CustomTable from '@/base/table'
 export default defineComponent({
   name: 'user',
-  components: { SearchForm },
+  components: { SearchForm, CustomTable },
 
   setup() {
+    // 获取全局方法
+    const { formatTime } =
+      getCurrentInstance()?.appContext.config.globalProperties.$filters
     // 注册store
     const store = useStore()
     // 从store中获取userList
@@ -44,6 +65,7 @@ export default defineComponent({
         }
       })
     }
+
     const propList = [
       { prop: 'name', label: '用户名', minWidth: '100', align: 'center' },
       { prop: 'realname', label: '真实姓名', minWidth: '100', align: 'center' },
@@ -53,11 +75,48 @@ export default defineComponent({
         minWidth: '100',
         align: 'center'
       },
-      { prop: 'enable', label: '状态', minWidth: '100', align: 'center' },
-      { prop: 'createAt', label: '创建时间', minWidth: '250', align: 'center' },
-      { prop: 'updateAt', label: '更新时间', minWidth: '250', align: 'center' }
+      {
+        prop: 'enable',
+        label: '状态',
+        minWidth: '100',
+        align: 'center',
+        slotName: 'status'
+      },
+      {
+        prop: 'createAt',
+        label: '创建时间',
+        minWidth: '250',
+        align: 'center',
+        slotName: 'createAt'
+      },
+      {
+        prop: 'updateAt',
+        label: '更新时间',
+        minWidth: '250',
+        align: 'center',
+        slotName: 'updateAt'
+      },
+      {
+        prop: 'actions',
+        label: '操作',
+        minWidth: '250',
+        align: 'center',
+        slotName: 'actions'
+      }
     ]
-    return { searchFormConfig, userList, userCount, propList }
+
+    const getDetail = (id: string) => {
+      console.log(id)
+    }
+    return {
+      searchFormConfig,
+      userList,
+      userCount,
+      propList,
+      moment,
+      getDetail,
+      formatTime
+    }
   }
 })
 </script>
