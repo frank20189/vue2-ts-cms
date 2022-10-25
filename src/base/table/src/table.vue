@@ -34,6 +34,7 @@
           :label="item.label"
           :min-width="item.minWidth"
           :align="item.align"
+          show-overflow-tooltip
         >
           <template #default="scope">
             <slot :name="item.slotName" :row="scope.row">
@@ -46,11 +47,11 @@
     <div class="footer">
       <slot name="tableFooter">
         <el-pagination
-          v-model:currentPage="currentPage"
-          v-model:page-size="pageSize"
+          v-model:currentPage="page.currentPage"
+          v-model:page-size="page.pageSize"
           :page-sizes="[10, 20, 30, 40]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
+          layout="sizes, prev, pager, next, jumper, total"
+          :total="dataCount"
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -86,20 +87,30 @@ export default defineComponent({
     title: {
       type: String,
       default: ''
+    },
+    dataCount: {
+      type: Number,
+      default: 0
+    },
+    page: {
+      type: Object as PropType<{ currentPage: number; pageSize: number }>,
+      default: () => ({ currentPage: 1, pageSize: 10 })
     }
   },
-  emits: ['selectionChange'],
+  emits: ['selectionChange', 'update:page'],
   setup(props, { emit }) {
     // todo
     const handleSelectionChange = (value: any) => {
       // todo 处理选中事件
       emit('selectionChange', value)
     }
-    const handleSizeChange = () => {
+    const handleSizeChange = (pageSize: number) => {
       //todo
+      emit('update:page', { ...props.page, pageSize })
     }
-    const handleCurrentChange = () => {
+    const handleCurrentChange = (currentPage: number) => {
       //todo
+      emit('update:page', { ...props.page, currentPage })
     }
     return { handleSelectionChange, handleSizeChange, handleCurrentChange }
   }
@@ -108,7 +119,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .custom-table {
-  margin-top: 32px;
+  padding-top: 32px;
   margin-right: 24px;
   margin-left: 24px;
   padding-bottom: 16px;

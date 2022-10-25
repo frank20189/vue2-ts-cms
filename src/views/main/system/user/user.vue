@@ -1,13 +1,25 @@
 <template>
   <div class="user">
     <div class="search">
-      <SearchForm :searchFormConfig="searchFormConfig" :btnToTop="'75px'" />
+      <SearchForm
+        :searchFormConfig="searchFormConfig"
+        :btnToTop="'75px'"
+        @resetBtnClick="handleResetClick"
+        @queryBtnClick="handleQueryClick"
+      />
     </div>
     <div class="content">
       <PageContent
+        ref="pageContentRef"
         :contentTableConfig="contentTableConfig"
         page-name="user"
-      ></PageContent>
+      >
+        <template #status="scope">
+          <el-tag :type="scope.row.enable ? 'success' : 'danger'" effect="dark">
+            {{ scope.row.enable ? '启用' : '禁用' }}
+          </el-tag>
+        </template>
+      </PageContent>
     </div>
   </div>
 </template>
@@ -17,6 +29,7 @@ import { defineComponent } from 'vue'
 
 import PageContent from '@/components/page-content'
 import SearchForm from '@/components/searchForm'
+import { usePageSearch } from '@/hooks/usePageSearch'
 import { contentTableConfig } from './config/content.config'
 import { searchFormConfig } from './config/user.config'
 export default defineComponent({
@@ -24,9 +37,15 @@ export default defineComponent({
   components: { SearchForm, PageContent },
 
   setup() {
+    const { pageContentRef, handleResetClick, handleQueryClick } =
+      usePageSearch()
+
     return {
       searchFormConfig,
-      contentTableConfig
+      contentTableConfig,
+      pageContentRef,
+      handleResetClick,
+      handleQueryClick
     }
   }
 })

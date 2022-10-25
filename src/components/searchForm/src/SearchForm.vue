@@ -7,7 +7,7 @@
             <el-icon><RefreshRight /></el-icon>
             重置
           </el-button>
-          <el-button type="primary">
+          <el-button type="primary" @click="handleSearchClick">
             <el-icon><Search /></el-icon>
             搜索
           </el-button>
@@ -35,7 +35,8 @@ export default defineComponent({
   components: {
     CustomForm
   },
-  setup(props) {
+  emits: ['resetBtnClick', 'queryBtnClick'],
+  setup(props, { emit }) {
     // formData 应该是通过fields属性来决定的
     const formItems = props.searchFormConfig.formItems ?? []
     const formOriginData: any = {}
@@ -51,8 +52,15 @@ export default defineComponent({
       Object.keys(formData.value).forEach((key) => {
         formData.value[key] = undefined
       })
+      emit('resetBtnClick')
     }
-    return { formData, handleResetClick }
+
+    // 用户点击搜索
+    const handleSearchClick = () => {
+      //todo
+      emit('queryBtnClick', formData.value)
+    }
+    return { formData, handleResetClick, handleSearchClick }
   }
 })
 </script>

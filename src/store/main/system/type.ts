@@ -52,4 +52,6 @@ export interface ISystemState {
   userCount: number
   roleList: RoleInfo[]
   roleCount: number
+  goodList: any[]
+  goodCount: number
 }

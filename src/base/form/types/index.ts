@@ -1,4 +1,4 @@
-export type IFormOptions = { label: string; value: string }
+export type IFormOptions = { label: string; value: number | string }
 
 export interface IFormItem {
   field: string
