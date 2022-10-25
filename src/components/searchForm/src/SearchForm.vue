@@ -3,7 +3,7 @@
     <CustomForm v-bind="searchFormConfig" v-model="formData">
       <template #footer>
         <div class="btn-group">
-          <el-button>
+          <el-button @click="handleResetClick">
             <el-icon><RefreshRight /></el-icon>
             重置
           </el-button>
@@ -35,16 +35,24 @@ export default defineComponent({
   components: {
     CustomForm
   },
-  setup() {
-    // todo
-    const formData = ref({
-      id: '',
-      name: '',
-      password: '',
-      sport: '',
-      createTime: ''
-    })
-    return { formData }
+  setup(props) {
+    // formData 应该是通过fields属性来决定的
+    const formItems = props.searchFormConfig.formItems ?? []
+    const formOriginData: any = {}
+    for (const item of formItems) {
+      formOriginData[item.field] = undefined
+    }
+
+    const formData = ref(formOriginData)
+    // 重置
+    const handleResetClick = () => {
+      // todo
+      // formData.value = formOriginData
+      Object.keys(formData.value).forEach((key) => {
+        formData.value[key] = undefined
+      })
+    }
+    return { formData, handleResetClick }
   }
 })
 </script>

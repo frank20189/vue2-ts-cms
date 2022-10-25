@@ -19,14 +19,16 @@
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
                   :show-password="item.type === 'password'"
-                  v-model="formData[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleChangeValue($event, item.field)"
                 />
               </template>
               <template v-else-if="item.type === 'select'">
                 <el-select
                   :placeholder="item.placeholder"
                   style="width: 100%"
-                  v-model="formData[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleChangeValue($event, item.field)"
                 >
                   <el-option
                     v-for="option in item.options"
@@ -43,7 +45,8 @@
                   style="width: 100%"
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
-                  v-model="formData[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleChangeValue($event, item.field)"
                 />
               </template>
             </el-form-item>
@@ -58,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { IFormItem } from '../types'
 export default defineComponent({
   props: {
@@ -86,11 +89,11 @@ export default defineComponent({
   emits: ['update:modelValue'],
   setup(props, { emit }) {
     // 满足单项数据流原则
-    const formData = ref<Record<string, any>>({ ...props.modelValue })
-    watch(formData, (newValue) => emit('update:modelValue', newValue), {
-      deep: true
-    })
-    return { formData }
+
+    const handleChangeValue = (value: any, field: string) => {
+      emit('update:modelValue', { ...props.modelValue, [field]: value })
+    }
+    return { handleChangeValue }
   }
 })
 </script>
