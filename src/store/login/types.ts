@@ -4,5 +4,6 @@ export interface ILogonState {
   token: string
   userInfo: IUserInfo
   userMenus: IUserMenuInfo[]
+  permissions: string[]
 }
 export type ILoginStateKey = keyof ILogonState

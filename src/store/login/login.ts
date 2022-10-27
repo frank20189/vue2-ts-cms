@@ -6,7 +6,7 @@ import {
   requestUserMenuByRoleId
 } from '@/service/login/login'
 import router from '@/router'
-import { mapMenusToRoutes } from '@/utils/mapMenus'
+import { mapMenusToPermission, mapMenusToRoutes } from '@/utils/mapMenus'
 
 // ================类型==================
 import { IRootState } from '../types'
@@ -19,7 +19,8 @@ const loginModule: Module<ILogonState, IRootState> = {
     return {
       token: '',
       userInfo: {} as unknown as IUserInfo,
-      userMenus: [] as unknown as IUserMenuInfo[]
+      userMenus: [] as unknown as IUserMenuInfo[],
+      permissions: []
     }
   },
   getters: {},
@@ -34,6 +35,9 @@ const loginModule: Module<ILogonState, IRootState> = {
       mapMenusToRoutes(payLoad).forEach((route) => {
         router.addRoute('main', route)
       })
+      // 获取用户按钮的权限
+      const permissions = mapMenusToPermission(payLoad)
+      state.permissions = permissions
     }
   },
   actions: {

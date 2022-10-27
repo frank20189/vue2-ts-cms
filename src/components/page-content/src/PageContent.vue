@@ -13,9 +13,12 @@
       @selection-change="handleSelectChange"
     >
       <template #headerHandler>
-        <slot name="header">
-          <el-button type="primary">新建用户</el-button>
-        </slot>
+        <div v-if="isCreate">
+          <slot name="header">
+            <el-button type="primary">新建用户</el-button>
+          </slot>
+        </div>
+
         <el-button type="primary" link @click="refreshTable">
           <el-icon style="font-size: 18px">
             <Refresh />
@@ -31,13 +34,13 @@
         <span>{{ formatTime(scope.row.updateAt) }}</span>
       </template>
       <template #handler>
-        <el-button link type="primary">
+        <el-button link type="primary" v-if="isUpdate">
           <el-icon>
             <Edit />
           </el-icon>
           编辑
         </el-button>
-        <el-button type="danger" link>
+        <el-button type="danger" link v-if="isDelete">
           <el-icon>
             <Delete />
           </el-icon>
@@ -62,6 +65,7 @@
 import CustomTable from '@/base/table'
 import { useStore } from '@/store'
 import { computed, defineComponent, getCurrentInstance, ref, watch } from 'vue'
+import { userPermission } from '@/hooks/usePermission'
 export default defineComponent({
   props: {
     contentTableConfig: {
@@ -80,6 +84,13 @@ export default defineComponent({
   setup(props) {
     const { formatTime } =
       getCurrentInstance()?.appContext.config.globalProperties.$filters
+
+    // 获取操作权限
+    const isCreate = userPermission(props.pageName, 'create')
+    const isUpdate = userPermission(props.pageName, 'update')
+    const isDelete = userPermission(props.pageName, 'delete')
+    const isQuery = userPermission(props.pageName, 'query')
+
     // 双向绑定PageInfo
     const pageInfo = ref({ currentPage: 1, pageSize: 10 })
     watch(pageInfo, () => getPageData(), { deep: true })
@@ -95,6 +106,7 @@ export default defineComponent({
     )
 
     const getPageData = (params: any = {}) => {
+      if (!isQuery) return
       store.dispatch('systemModule/getPageListAction', {
         pageName: props.pageName,
         queryInfo: {
@@ -132,6 +144,9 @@ export default defineComponent({
       pageCount,
       pageInfo,
       otherPropsSlots,
+      isCreate,
+      isUpdate,
+      isDelete,
       handleSelectChange,
       getPageData,
       refreshTable
