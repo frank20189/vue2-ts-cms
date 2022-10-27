@@ -14,6 +14,7 @@
       stripe
       style="width: 100%"
       @selection-change="handleSelectionChange"
+      v-bind="childrenProps"
     >
       <el-table-column
         v-if="showSelectColumn"
@@ -44,7 +45,7 @@
         </el-table-column>
       </template>
     </el-table>
-    <div class="footer">
+    <div class="footer" v-if="showFooter">
       <slot name="tableFooter">
         <el-pagination
           v-model:currentPage="page.currentPage"
@@ -95,6 +96,14 @@ export default defineComponent({
     page: {
       type: Object as PropType<{ currentPage: number; pageSize: number }>,
       default: () => ({ currentPage: 1, pageSize: 10 })
+    },
+    childrenProps: {
+      type: Object,
+      default: () => ({})
+    },
+    showFooter: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['selectionChange', 'update:page'],

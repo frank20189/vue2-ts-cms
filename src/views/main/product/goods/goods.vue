@@ -14,6 +14,9 @@
         :contentTableConfig="contentTableConfig"
         page-name="good"
       >
+        <template #header>
+          <el-button type="primary">新建商品</el-button>
+        </template>
         <template #status="scope">
           <el-tag
             :type="scope.row.status ? 'success' : 'danger'"

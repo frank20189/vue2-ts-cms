@@ -54,4 +54,6 @@ export interface ISystemState {
   roleCount: number
   goodList: any[]
   goodCount: number
+  menuList: any[]
+  menuCount: number
 }

@@ -6,12 +6,16 @@
       :show-index-column="contentTableConfig.showIndexColumn"
       :show-select-column="contentTableConfig.showSelectColumn"
       :title="contentTableConfig.title"
+      :childrenProps="contentTableConfig.childrenProps"
       :data-count="pageCount"
+      :showFooter="contentTableConfig.showFooter"
       v-model:page="pageInfo"
       @selection-change="handleSelectChange"
     >
       <template #headerHandler>
-        <el-button type="primary">新建用户</el-button>
+        <slot name="header">
+          <el-button type="primary">新建用户</el-button>
+        </slot>
         <el-button type="primary" link @click="refreshTable">
           <el-icon style="font-size: 18px">
             <Refresh />
@@ -19,6 +23,7 @@
         </el-button>
       </template>
 
+      <!-- 固定插槽 -->
       <template #createAt="scope">
         <span>{{ formatTime(scope.row.createAt) }}</span>
       </template>
@@ -39,6 +44,7 @@
           删除
         </el-button>
       </template>
+      <!-- 动态插槽 -->
       <template
         v-for="item in otherPropsSlots"
         :key="item.prop"
