@@ -20,6 +20,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import CustomForm from '@/base/form'
+import { useStore } from 'vuex'
 export default defineComponent({
   name: 'SearchForm',
   props: {
@@ -37,6 +38,7 @@ export default defineComponent({
   },
   emits: ['resetBtnClick', 'queryBtnClick'],
   setup(props, { emit }) {
+    const store = useStore()
     // formData 应该是通过fields属性来决定的
     const formItems = props.searchFormConfig.formItems ?? []
     const formOriginData: any = {}
@@ -52,13 +54,17 @@ export default defineComponent({
       Object.keys(formData.value).forEach((key) => {
         formData.value[key] = undefined
       })
+      store.commit('systemModule/changeQueryInfo', formData.value)
       emit('resetBtnClick')
     }
 
     // 用户点击搜索
     const handleSearchClick = () => {
       //todo
+      store.commit('systemModule/changeQueryInfo', {})
+
       emit('queryBtnClick', formData.value)
+      store.commit('systemModule/changeQueryInfo', formData.value)
     }
     return { formData, handleResetClick, handleSearchClick }
   }

@@ -13,17 +13,19 @@
       @selection-change="handleSelectChange"
     >
       <template #headerHandler>
-        <div v-if="isCreate">
-          <slot name="header">
-            <el-button type="primary">新建用户</el-button>
-          </slot>
-        </div>
+        <div class="table-header">
+          <div v-if="isCreate" class="btn-group">
+            <slot name="header">
+              <el-button type="primary">新建用户</el-button>
+            </slot>
+          </div>
 
-        <el-button type="primary" link @click="refreshTable">
-          <el-icon style="font-size: 18px">
-            <Refresh />
-          </el-icon>
-        </el-button>
+          <el-button type="primary" link @click="refreshTable">
+            <el-icon style="font-size: 18px">
+              <Refresh />
+            </el-icon>
+          </el-button>
+        </div>
       </template>
 
       <!-- 固定插槽 -->
@@ -33,14 +35,19 @@
       <template #updateAt="scope">
         <span>{{ formatTime(scope.row.updateAt) }}</span>
       </template>
-      <template #handler>
+      <template #handler="scope">
         <el-button link type="primary" v-if="isUpdate">
           <el-icon>
             <Edit />
           </el-icon>
           编辑
         </el-button>
-        <el-button type="danger" link v-if="isDelete">
+        <el-button
+          type="danger"
+          link
+          v-if="isDelete"
+          @click="handleDeleteClick(scope.row)"
+        >
           <el-icon>
             <Delete />
           </el-icon>
@@ -107,6 +114,7 @@ export default defineComponent({
 
     const getPageData = (params: any = {}) => {
       if (!isQuery) return
+
       store.dispatch('systemModule/getPageListAction', {
         pageName: props.pageName,
         queryInfo: {
@@ -138,6 +146,16 @@ export default defineComponent({
         return true
       }
     )
+
+    // 删除操作
+    const handleDeleteClick = (item: any) => {
+      // todo
+      store.dispatch('systemModule/deletePageDataAction', {
+        pageName: props.pageName,
+        id: item.id
+      })
+    }
+
     return {
       formatTime,
       listData,
@@ -149,7 +167,8 @@ export default defineComponent({
       isDelete,
       handleSelectChange,
       getPageData,
-      refreshTable
+      refreshTable,
+      handleDeleteClick
     }
   }
 })
@@ -157,5 +176,11 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .page-content {
+  .table-header {
+    display: flex;
+    .btn-group {
+      margin-right: 16px;
+    }
+  }
 }
 </style>

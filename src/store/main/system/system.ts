@@ -2,7 +2,8 @@ import { IRootState } from '@/store/types'
 import { Module } from 'vuex'
 import { ISystemState } from './type'
 import { upperFirst } from 'lodash'
-import { getPageListData } from '@/service/main/system/system'
+import { deletePageData, getPageListData } from '@/service/main/system/system'
+import { ElMessage } from 'element-plus'
 
 // 定义pageUrl映射
 const pageUrlMap = {
@@ -12,10 +13,16 @@ const pageUrlMap = {
   menu: '/menu/list'
 }
 
+// 定义删除操作的url
+const pageDeleteMap = {
+  user: '/users'
+}
+
 const systemModule: Module<ISystemState, IRootState> = {
   namespaced: true,
   state: () => {
     return {
+      queryInfo: {},
       userList: [],
       userCount: 0,
       roleList: [],
@@ -27,11 +34,6 @@ const systemModule: Module<ISystemState, IRootState> = {
     }
   },
   mutations: {
-    setData(state, payLoad) {
-      Object.keys(state).forEach((item: string) => {
-        state[item as keyof ISystemState] = payLoad[item]
-      })
-    },
     changeUserList(state, userList: any[]) {
       state.userList = userList
     },
@@ -55,6 +57,9 @@ const systemModule: Module<ISystemState, IRootState> = {
     },
     changeMenuList(state, menuList: any[]) {
       state.menuList = menuList
+    },
+    changeQueryInfo(state, querInfo: any) {
+      state.queryInfo = querInfo
     }
   },
   getters: {
@@ -84,6 +89,25 @@ const systemModule: Module<ISystemState, IRootState> = {
       // 将数据存储在state中
       commit(`change${upperFirst(pageName)}List`, list)
       commit(`change${upperFirst(pageName)}Count`, totalCount)
+    },
+    async deletePageDataAction(context, payLoad: any) {
+      // todo payLoad中需要含有pageName，通过pageName来做适配，以及id用于适配result full
+      // 获取pageName与id
+      const { pageName, id } = payLoad
+      const pageUrl = `${
+        pageDeleteMap[pageName as keyof typeof pageDeleteMap]
+      }/${id}`
+      // 调用删除网络请求
+      const res = await deletePageData(pageUrl)
+      if ((res.code as unknown as number) === 0) {
+        await context.dispatch('getPageListAction', {
+          pageName: pageName,
+          queryInfo: context.state.queryInfo
+        })
+        ElMessage.success('删除成功')
+      } else {
+        ElMessage.error('删除失败' + res.data)
+      }
     }
   }
 }

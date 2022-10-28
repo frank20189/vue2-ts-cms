@@ -56,4 +56,5 @@ export interface ISystemState {
   goodCount: number
   menuList: any[]
   menuCount: number
+  queryInfo: Record<string, any>
 }
