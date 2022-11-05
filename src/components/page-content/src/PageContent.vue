@@ -73,6 +73,7 @@ import CustomTable from '@/base/table'
 import { useStore } from '@/store'
 import { computed, defineComponent, getCurrentInstance, ref, watch } from 'vue'
 import { userPermission } from '@/hooks/usePermission'
+import { ElMessage, ElMessageBox } from 'element-plus'
 export default defineComponent({
   props: {
     contentTableConfig: {
@@ -149,11 +150,25 @@ export default defineComponent({
 
     // 删除操作
     const handleDeleteClick = (item: any) => {
-      // todo
-      store.dispatch('systemModule/deletePageDataAction', {
-        pageName: props.pageName,
-        id: item.id
+      // 增加确认按钮，防止用户误触
+      ElMessageBox.confirm('此操作将永久删除该用户，是否继续？', '删除用户', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => {
+          // 在vuex中发起请求
+          store.dispatch('systemModule/deletePageDataAction', {
+            pageName: props.pageName,
+            id: item.id
+          })
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
 
     return {

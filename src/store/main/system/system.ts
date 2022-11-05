@@ -100,9 +100,10 @@ const systemModule: Module<ISystemState, IRootState> = {
       // 调用删除网络请求
       const res = await deletePageData(pageUrl)
       if ((res.code as unknown as number) === 0) {
+        // 在此调用获取数据接口
         await context.dispatch('getPageListAction', {
           pageName: pageName,
-          queryInfo: context.state.queryInfo
+          queryInfo: { offset: 0, size: 10, ...context.state.queryInfo }
         })
         ElMessage.success('删除成功')
       } else {
