@@ -3,7 +3,7 @@
     <div class="header">
       <slot name="header"></slot>
     </div>
-    <el-form :label-width="labelWidth">
+    <el-form :label-width="labelWidth" ref="ruleFormRef ">
       <el-row>
         <template v-for="item in formItems" :key="item.label">
           <el-col v-bind="colLayout">
@@ -61,7 +61,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import type { FormInstance } from 'element-plus'
+import { defineComponent, PropType, ref } from 'vue'
 import { IFormItem } from '../types'
 export default defineComponent({
   props: {
@@ -89,11 +90,11 @@ export default defineComponent({
   emits: ['update:modelValue'],
   setup(props, { emit }) {
     // 满足单项数据流原则
-
+    const ruleFormRef = ref<FormInstance>()
     const handleChangeValue = (value: any, field: string) => {
       emit('update:modelValue', { ...props.modelValue, [field]: value })
     }
-    return { handleChangeValue }
+    return { handleChangeValue, ruleFormRef }
   }
 })
 </script>

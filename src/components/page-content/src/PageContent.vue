@@ -13,19 +13,16 @@
       @selection-change="handleSelectChange"
     >
       <template #headerHandler>
-        <div class="table-header">
-          <div v-if="isCreate" class="btn-group">
-            <slot name="header">
-              <el-button type="primary">新建用户</el-button>
-            </slot>
-          </div>
-
+        <slot name="header">
+          <el-button type="primary" v-if="isCreate" @click="hanldeAddNewClick">
+            {{ handerButtonName }}
+          </el-button>
           <el-button type="primary" link @click="refreshTable">
             <el-icon style="font-size: 18px">
               <Refresh />
             </el-icon>
           </el-button>
-        </div>
+        </slot>
       </template>
 
       <!-- 固定插槽 -->
@@ -36,7 +33,12 @@
         <span>{{ formatTime(scope.row.updateAt) }}</span>
       </template>
       <template #handler="scope">
-        <el-button link type="primary" v-if="isUpdate">
+        <el-button
+          link
+          type="primary"
+          v-if="isUpdate"
+          @click="handleEditClick(scope.row)"
+        >
           <el-icon>
             <Edit />
           </el-icon>
@@ -83,13 +85,17 @@ export default defineComponent({
     pageName: {
       type: String,
       required: true
+    },
+    handerButtonName: {
+      type: String,
+      default: '新建数据'
     }
   },
-  emits: ['handleSelectChange'],
+  emits: ['handleSelectChange', 'newBtnClick', 'editBtnClick'],
   components: {
     CustomTable
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { formatTime } =
       getCurrentInstance()?.appContext.config.globalProperties.$filters
 
@@ -171,6 +177,16 @@ export default defineComponent({
         })
     }
 
+    // 编辑数据
+    const handleEditClick = (item: any) => {
+      emit('editBtnClick', item)
+    }
+
+    // 新增数据
+    const hanldeAddNewClick = () => {
+      emit('newBtnClick')
+    }
+
     return {
       formatTime,
       listData,
@@ -183,7 +199,9 @@ export default defineComponent({
       handleSelectChange,
       getPageData,
       refreshTable,
-      handleDeleteClick
+      handleDeleteClick,
+      handleEditClick,
+      hanldeAddNewClick
     }
   }
 })
