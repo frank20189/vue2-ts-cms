@@ -11,6 +11,7 @@ export interface IFormItem {
   // 针对特殊属性
   otherOptions?: any
   itemStyle?: Record<string, any>
+  isHidden?: boolean
 }
 
 export interface IForm {

@@ -13,8 +13,8 @@
         ref="pageContentRef"
         :contentTableConfig="contentTableConfig"
         page-name="user"
-        @newBtnClick="handleNewData"
-        @editBtnClick="handleEditData"
+        @newBtnClick="handleNewData('新增用户')"
+        @editBtnClick="handleEditData($event, '编辑用户')"
       >
         <template #status="scope">
           <el-tag :type="scope.row.enable ? 'success' : 'danger'" effect="dark">
@@ -27,6 +27,7 @@
       ref="pageModalRef"
       :modalFormConfig="modalFormConfig"
       :defaultInfo="defaultInfo"
+      :title="title"
     />
   </div>
 </template>
@@ -50,8 +51,25 @@ export default defineComponent({
     const { pageContentRef, handleResetClick, handleQueryClick } =
       usePageSearch()
 
-    const { pageModalRef, defaultInfo, handleNewData, handleEditData } =
-      usePageModal()
+    // 单独的数据项处理
+    const newCallBack = () => {
+      //todo
+      const passwordItem = modalFormConfig.formItems.find(
+        (item) => item.field === 'password'
+      )
+      passwordItem && (passwordItem.isHidden = false)
+    }
+    // 单独的数据项处理
+    const editCallBack = () => {
+      // todo
+      const passwordItem = modalFormConfig.formItems.find(
+        (item) => item.field === 'password'
+      )
+      passwordItem && (passwordItem.isHidden = true)
+    }
+    // pageModal 相关的hook逻辑
+    const { title, pageModalRef, defaultInfo, handleNewData, handleEditData } =
+      usePageModal(newCallBack, editCallBack)
 
     return {
       searchFormConfig,
@@ -60,6 +78,7 @@ export default defineComponent({
       modalFormConfig,
       pageModalRef,
       defaultInfo,
+      title,
       handleResetClick,
       handleQueryClick,
       handleNewData,

@@ -1,21 +1,33 @@
 import { ref } from 'vue'
 import PageModal from '@/components/page-modal'
-export function usePageModal() {
+
+type CallBackFn = () => void
+
+export function usePageModal(newCB?: CallBackFn, editCB?: CallBackFn) {
   const pageModalRef = ref<InstanceType<typeof PageModal>>()
   const defaultInfo = ref({})
-  const handleNewData = () => {
+  const title = ref<string>('')
+
+  const handleNewData = (value: string) => {
+    // value  传递title标题
+    title.value = value
     defaultInfo.value = {}
     pageModalRef.value && (pageModalRef.value.dialogVisible = true)
+    newCB && newCB()
   }
 
-  const handleEditData = (payload: any) => {
+  // 传递payload表格行数据，以及title标题
+  const handleEditData = (payload: any, value: string) => {
+    title.value = value
     defaultInfo.value = { ...payload }
     pageModalRef.value && (pageModalRef.value.dialogVisible = true)
+    editCB && editCB()
   }
 
   return {
     pageModalRef,
     defaultInfo,
+    title,
     handleNewData,
     handleEditData
   }
