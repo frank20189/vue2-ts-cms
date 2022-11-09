@@ -30,15 +30,13 @@ const formItems: IFormItem[] = [
     field: 'departmentId',
     type: 'select',
     label: '选择部门',
-    placeholder: '请选择部门',
-    options: []
+    placeholder: '请选择部门'
   },
   {
     field: 'roleId',
     type: 'select',
     label: '选择角色',
-    placeholder: '请选择角色',
-    options: []
+    placeholder: '请选择角色'
   }
 ]
 export const modalFormConfig: IForm = {

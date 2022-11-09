@@ -25,7 +25,7 @@
     </div>
     <PageModal
       ref="pageModalRef"
-      :modalFormConfig="modalFormConfig"
+      :modalFormConfig="modalFormConfigRef"
       :defaultInfo="defaultInfo"
       :title="title"
     />
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import PageContent from '@/components/page-content'
 import PageModal from '@/components/page-modal'
 import SearchForm from '@/components/searchForm'
@@ -42,6 +42,7 @@ import { usePageSearch } from '@/hooks/usePageSearch'
 import { contentTableConfig } from './config/content.config'
 import { modalFormConfig } from './config/modal.config'
 import { searchFormConfig } from './config/user.config'
+import { useStore } from '@/store'
 
 export default defineComponent({
   name: 'user',
@@ -51,7 +52,7 @@ export default defineComponent({
     const { pageContentRef, handleResetClick, handleQueryClick } =
       usePageSearch()
 
-    // 单独的数据项处理
+    // 处理密码逻辑
     const newCallBack = () => {
       //todo
       const passwordItem = modalFormConfig.formItems.find(
@@ -59,7 +60,6 @@ export default defineComponent({
       )
       passwordItem && (passwordItem.isHidden = false)
     }
-    // 单独的数据项处理
     const editCallBack = () => {
       // todo
       const passwordItem = modalFormConfig.formItems.find(
@@ -67,7 +67,34 @@ export default defineComponent({
       )
       passwordItem && (passwordItem.isHidden = true)
     }
-    // pageModal 相关的hook逻辑
+    // 动态添加部门和角色列表
+    const store = useStore()
+
+    const modalFormConfigRef = computed(() => {
+      const departmentItem = modalFormConfig.formItems.find(
+        (item) => item.field === 'departmentId'
+      )
+      departmentItem &&
+        (departmentItem.options = store.state.entireDepartment.map((item) => {
+          return {
+            label: item.name,
+            value: item.id
+          }
+        }))
+      const roleItem = modalFormConfig.formItems.find(
+        (item) => item.field === 'roleId'
+      )
+      roleItem &&
+        (roleItem.options = store.state.entireRole.map((item) => {
+          return {
+            label: item.name,
+            value: item.id
+          }
+        }))
+      return modalFormConfig
+    })
+
+    // 调用hook获取公共的变量和函数
     const { title, pageModalRef, defaultInfo, handleNewData, handleEditData } =
       usePageModal(newCallBack, editCallBack)
 
@@ -75,7 +102,7 @@ export default defineComponent({
       searchFormConfig,
       contentTableConfig,
       pageContentRef,
-      modalFormConfig,
+      modalFormConfigRef,
       pageModalRef,
       defaultInfo,
       title,
