@@ -36,6 +36,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
+import { useStore } from '@/store'
 import PageContent from '@/components/page-content'
 import PageModal from '@/components/page-modal'
 import SearchForm from '@/components/searchForm'
@@ -44,7 +45,7 @@ import { usePageSearch } from '@/hooks/usePageSearch'
 import { contentTableConfig } from './config/content.config'
 import { modalFormConfig } from './config/modal.config'
 import { searchFormConfig } from './config/user.config'
-import { useStore } from '@/store'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'user',
@@ -126,18 +127,26 @@ export default defineComponent({
     }
     const handleAddNewData = (value: any) => {
       nameMapToId(value)
-      store.dispatch('systemModule/createPageDataAction', {
-        pageName: 'user',
-        newData: { ...value }
-      })
+      store
+        .dispatch('systemModule/createPageDataAction', {
+          pageName: 'user',
+          newData: { ...value }
+        })
+        .then(() => {
+          ElMessage.success('添加成功')
+        })
     }
     const handleEditDataAction = (value: any) => {
       nameMapToId(value)
-      store.dispatch('systemModule/editPageDataAction', {
-        pageName: 'user',
-        editData: { ...value },
-        id: value.id
-      })
+      store
+        .dispatch('systemModule/editPageDataAction', {
+          pageName: 'user',
+          editData: { ...value },
+          id: value.id
+        })
+        .then(() => {
+          ElMessage.success('编辑成功')
+        })
     }
     return {
       searchFormConfig,

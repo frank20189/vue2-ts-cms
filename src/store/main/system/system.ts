@@ -9,27 +9,7 @@ import {
   editPageData
 } from '@/service/main/system/system'
 import { ElMessage } from 'element-plus'
-
-// 定义pageUrl映射
-const pageUrlMap = {
-  user: '/users/list',
-  role: '/role/list',
-  good: '/goods/list',
-  menu: '/menu/list'
-}
-
-// 定义删除操作的url
-const pageDeleteMap = {
-  user: '/users'
-}
-
-const addDataMap = {
-  user: '/users'
-}
-
-const editDataMap = {
-  user: '/users'
-}
+import { pageUrlMap, pageDeleteMap, addDataMap, editDataMap } from '../pageMap'
 
 const systemModule: Module<ISystemState, IRootState> = {
   namespaced: true,
@@ -104,7 +84,7 @@ const systemModule: Module<ISystemState, IRootState> = {
       commit(`change${upperFirst(pageName)}Count`, totalCount)
     },
     async deletePageDataAction(context, payLoad: any) {
-      // todo payLoad中需要含有pageName，通过pageName来做适配，以及id用于适配result full
+      // payLoad中需要含有pageName，通过pageName来做适配，以及id用于适配result full
       // 获取pageName与id
       const { pageName, id } = payLoad
       const pageUrl = `${
