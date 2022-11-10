@@ -2,7 +2,12 @@ import { IRootState } from '@/store/types'
 import { Module } from 'vuex'
 import { ISystemState } from './type'
 import { upperFirst } from 'lodash'
-import { deletePageData, getPageListData } from '@/service/main/system/system'
+import {
+  deletePageData,
+  getPageListData,
+  createPageData,
+  editPageData
+} from '@/service/main/system/system'
 import { ElMessage } from 'element-plus'
 
 // 定义pageUrl映射
@@ -15,6 +20,14 @@ const pageUrlMap = {
 
 // 定义删除操作的url
 const pageDeleteMap = {
+  user: '/users'
+}
+
+const addDataMap = {
+  user: '/users'
+}
+
+const editDataMap = {
   user: '/users'
 }
 
@@ -109,6 +122,32 @@ const systemModule: Module<ISystemState, IRootState> = {
       } else {
         ElMessage.error('删除失败' + res.data)
       }
+    },
+
+    // 创建数据对应的操作
+    async createPageDataAction(context, payLoad: any) {
+      const { pageName, newData } = payLoad
+      const pageUrl = `${addDataMap[pageName as keyof typeof addDataMap]}`
+      await createPageData(pageUrl, newData)
+
+      await context.dispatch('getPageListAction', {
+        pageName: pageName,
+        queryInfo: { offset: 0, size: 10, ...context.state.queryInfo }
+      })
+    },
+
+    // 编辑数据对应的操作
+    async editPageDataAction(context, payLoad: any) {
+      const { pageName, editData, id } = payLoad
+      const pageUrl = `${
+        editDataMap[pageName as keyof typeof editDataMap]
+      }/${id}`
+      await editPageData(pageUrl, editData)
+
+      await context.dispatch('getPageListAction', {
+        pageName: pageName,
+        queryInfo: { offset: 0, size: 10, ...context.state.queryInfo }
+      })
     }
   }
 }

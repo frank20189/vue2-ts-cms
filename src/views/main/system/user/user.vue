@@ -28,6 +28,8 @@
       :modalFormConfig="modalFormConfigRef"
       :defaultInfo="defaultInfo"
       :title="title"
+      @addNewData="handleAddNewData"
+      @editData="handleEditDataAction"
     />
   </div>
 </template>
@@ -51,6 +53,7 @@ export default defineComponent({
   setup() {
     const { pageContentRef, handleResetClick, handleQueryClick } =
       usePageSearch()
+    const store = useStore()
 
     // 处理密码逻辑
     const newCallBack = () => {
@@ -60,15 +63,28 @@ export default defineComponent({
       )
       passwordItem && (passwordItem.isHidden = false)
     }
-    const editCallBack = () => {
+    const editCallBack = (payload: any) => {
       // todo
       const passwordItem = modalFormConfig.formItems.find(
         (item) => item.field === 'password'
       )
+      const idItem = modalFormConfig.formItems.find(
+        (item) => item.field === 'id'
+      )
+
+      // select下拉框选择器对应回显
+      const departmentDetail = store.state.entireDepartment.find(
+        (item) => item.id === payload.departmentId
+      )
+      const roleDetail = store.state.entireRole.find(
+        (item) => item.id === payload.roleId
+      )
+      payload.departmentId = departmentDetail.name
+      payload.roleId = roleDetail.name
       passwordItem && (passwordItem.isHidden = true)
+      idItem && (idItem.isHidden = true)
     }
     // 动态添加部门和角色列表
-    const store = useStore()
 
     const modalFormConfigRef = computed(() => {
       const departmentItem = modalFormConfig.formItems.find(
@@ -78,7 +94,7 @@ export default defineComponent({
         (departmentItem.options = store.state.entireDepartment.map((item) => {
           return {
             label: item.name,
-            value: item.id
+            value: item.name
           }
         }))
       const roleItem = modalFormConfig.formItems.find(
@@ -88,7 +104,7 @@ export default defineComponent({
         (roleItem.options = store.state.entireRole.map((item) => {
           return {
             label: item.name,
-            value: item.id
+            value: item.name
           }
         }))
       return modalFormConfig
@@ -98,6 +114,31 @@ export default defineComponent({
     const { title, pageModalRef, defaultInfo, handleNewData, handleEditData } =
       usePageModal(newCallBack, editCallBack)
 
+    const nameMapToId = (value: any) => {
+      const departmentDetail = store.state.entireDepartment.find(
+        (item) => item.name === value.departmentId
+      )
+      const roleDetail = store.state.entireRole.find(
+        (item) => item.name === value.roleId
+      )
+      value.departmentId = departmentDetail.id
+      value.roleId = roleDetail.id
+    }
+    const handleAddNewData = (value: any) => {
+      nameMapToId(value)
+      store.dispatch('systemModule/createPageDataAction', {
+        pageName: 'user',
+        newData: { ...value }
+      })
+    }
+    const handleEditDataAction = (value: any) => {
+      nameMapToId(value)
+      store.dispatch('systemModule/editPageDataAction', {
+        pageName: 'user',
+        editData: { ...value },
+        id: value.id
+      })
+    }
     return {
       searchFormConfig,
       contentTableConfig,
@@ -109,7 +150,9 @@ export default defineComponent({
       handleResetClick,
       handleQueryClick,
       handleNewData,
-      handleEditData
+      handleEditData,
+      handleAddNewData,
+      handleEditDataAction
     }
   }
 })

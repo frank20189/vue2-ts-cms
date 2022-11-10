@@ -16,9 +16,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">
-            确定
-          </el-button>
+          <el-button type="primary" @click="handleConfirm"> 确定 </el-button>
         </span>
       </template>
     </el-dialog>
@@ -44,7 +42,8 @@ export default defineComponent({
       default: ''
     }
   },
-  setup(props) {
+  emits: ['addNewData', 'editData'],
+  setup(props, { emit }) {
     // todo
     const CustomFormRef = ref<InstanceType<typeof CustomForm>>()
     const dialogVisible = ref<boolean>(false)
@@ -58,10 +57,23 @@ export default defineComponent({
         }
       }
     )
+
+    const handleConfirm = () => {
+      dialogVisible.value = false
+      if (Object.keys(props.defaultInfo).length) {
+        // 编辑操作
+        emit('editData', { ...formData.value })
+      } else {
+        // 新增
+        emit('addNewData', { ...formData.value })
+      }
+    }
+
     return {
       dialogVisible,
       formData,
-      CustomFormRef
+      CustomFormRef,
+      handleConfirm
     }
   }
 })
