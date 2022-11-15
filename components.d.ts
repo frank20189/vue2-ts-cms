@@ -41,6 +41,7 @@ declare module '@vue/runtime-core' {
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
+    ElTree: typeof import('element-plus/es')['ElTree']
     NavBreadcrumb: typeof import('./src/components/nav-header/src/NavBreadcrumb.vue')['default']
     NavHeader: typeof import('./src/components/nav-header/src/NavHeader.vue')['default']
     NavMenu: typeof import('./src/components/nav-menu/src/NavMenu.vue')['default']

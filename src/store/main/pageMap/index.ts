@@ -9,13 +9,16 @@ export const pageUrlMap = {
 
 // 定义删除操作的url
 export const pageDeleteMap = {
-  user: '/users'
+  user: '/users',
+  role: '/role'
 }
 
 export const addDataMap = {
-  user: '/users'
+  user: '/users',
+  role: '/role'
 }
 
 export const editDataMap = {
-  user: '/users'
+  user: '/users',
+  role: '/role'
 }

@@ -79,4 +79,22 @@ export function mapMenusToPermission(userMenus: any[]) {
   return permissions
 }
 
+// 获取叶子节点
+export function mapMenuLeafKeys(menuList: any[]) {
+  // todo
+  const leftKeys: number[] = []
+
+  const _recuseGetLeaf = (menuList: any[]) => {
+    for (const menu of menuList) {
+      if (menu.children) {
+        _recuseGetLeaf(menu.children)
+      } else {
+        leftKeys.push(menu.id)
+      }
+    }
+  }
+  _recuseGetLeaf(menuList)
+
+  return leftKeys
+}
 export { firstMenu }

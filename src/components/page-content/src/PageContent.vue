@@ -72,10 +72,10 @@
 
 <script lang="ts">
 import CustomTable from '@/base/table'
-import { useStore } from '@/store'
-import { computed, defineComponent, getCurrentInstance, ref, watch } from 'vue'
 import { userPermission } from '@/hooks/usePermission'
+import { useStore } from '@/store'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { computed, defineComponent, getCurrentInstance, ref, watch } from 'vue'
 export default defineComponent({
   props: {
     contentTableConfig: {

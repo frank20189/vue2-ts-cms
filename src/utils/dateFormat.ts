@@ -7,5 +7,6 @@ export function formatUtcString(
   utcString: string,
   formate: string = DATE_TIME_FORMAT
 ) {
-  return dayjs.utc(utcString).format(formate)
+  // 使用utc需要指定区域
+  return dayjs.utc(utcString).utcOffset(8).format(formate)
 }

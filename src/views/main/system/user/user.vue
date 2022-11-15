@@ -35,17 +35,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
-import { useStore } from '@/store'
 import PageContent from '@/components/page-content'
 import PageModal from '@/components/page-modal'
 import SearchForm from '@/components/searchForm'
 import { usePageModal } from '@/hooks/usePageModal'
 import { usePageSearch } from '@/hooks/usePageSearch'
+import { useStore } from '@/store'
+import { ElMessage } from 'element-plus'
+import { computed, defineComponent } from 'vue'
 import { contentTableConfig } from './config/content.config'
 import { modalFormConfig } from './config/modal.config'
 import { searchFormConfig } from './config/user.config'
-import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'user',
@@ -80,6 +80,7 @@ export default defineComponent({
       const roleDetail = store.state.entireRole.find(
         (item) => item.id === payload.roleId
       )
+      // 处理映射关系
       payload.departmentId = departmentDetail.name
       payload.roleId = roleDetail.name
       passwordItem && (passwordItem.isHidden = true)

@@ -18,9 +18,9 @@ export function usePageModal(newCB?: CallBackFn, editCB?: CallBackFn) {
 
   // 传递payload表格行数据，以及title标题
   const handleEditData = (payload: any, value: string) => {
-    editCB && editCB(payload)
     title.value = value
     pageModalRef.value && (pageModalRef.value.dialogVisible = true)
+    editCB && editCB(payload)
     defaultInfo.value = { ...payload }
   }
 

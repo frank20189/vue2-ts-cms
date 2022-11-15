@@ -13,6 +13,7 @@
         v-model="formData"
         ref="CustomFormRef"
       />
+      <slot></slot>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
